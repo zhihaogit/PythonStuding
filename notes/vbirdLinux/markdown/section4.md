@@ -5,8 +5,8 @@
 #### 4.1.3 x window与文字模式的切换
 
 - linux默认提供6个 terminal
-- 切换方式为 [Ctrl] + [Alt] + [F1]~[F6]
-- 系统将 [F1]~[F6]命令为 tty1~tty6
+- 切换方式为 [Ctrl] + [Alt] + [F1] ~ [F6]
+- 系统将 [F1] ~ [F6]命令为 tty1 ~ tty6
 - `startx`启动窗口界面，任何人都可以执行
 - `systemctl setdefault graphical.target`将图形化界面设为默认
 - `exit`登出系统
