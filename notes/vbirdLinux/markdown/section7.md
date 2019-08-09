@@ -178,3 +178,104 @@ Ex2在格式化的时候基本上是区分为多个区块群组（block group）
 - `lsblk` 列出系统中的所有磁盘列表
 - `blkid` 列出设备的UUID等参数
 - `parted` 列出磁盘的分区表类型与分区信息
+
+
+### 7.3 磁盘的分区、格式化、检验与挂载
+
+新增磁盘步骤
+
+1. 分区，创建可用的 partition
+2. 对该 partition格式化(format)，创建可用的 filesystem
+3. 可以选择对 filesystem进行检验
+4. 创建挂载点(目录)，并挂载
+
+#### 7.3.1 观察磁盘分区状态
+
+- `lsblk` 列出系统中的所有磁盘列表
+  - `lsblk [-dfimpt] [device]`
+  - `-f` 列出文件系统与设备的 UUID数据
+  - `MAJ:MIN` 主要、次要设备代码
+- `blkid` 列出设备的UUID等参数
+  - UUID是全域单一识别码(universally unique identifier)
+- `parted` 列出磁盘的分区表类型与分区信息
+  - `parted device_name print`
+
+#### 7.3.2 磁盘分区：gdisk/fdisk
+
+MBR分区表使用 fdisk分区，GPT分区表使用 gdisk分区
+
+- `gdisk`
+  - `gdisk 设备名称`
+  - `w` 立即执行
+  - `q` 离开
+  - `partprobe` 更新 Linux核心的分区表信息
+  - `partprobe [-s]` -s打印信息
+  - `cat /proc/partitions` 核心的分区资料
+- `fdisk`
+  - `fdisk 设备名称`
+  - `m` 获得指令介绍
+
+#### 7.3.3 磁盘格式化（创建文件系统）
+
+- XFS文件系统 mkfs.xfs
+  - `mkfs.xfs [-b bsize] [-d parms] [-i parms] [-l parms] [-L label] [-f] [-r parms] 设备名称`
+  - eg: `mkfs.xfs /dev/vda4`
+  - `grep 'processor' /proc/cpuinfo` 找出系统的cpu核数
+  - `mkfs.xfs -f -d agcount=2 /dev/vda4` 设置 agcount数值
+- XFS文件系统 for RAID性能优化（optional）
+  - 磁盘阵列（RAID）
+- EXT4文件系统mkfs.ext4
+  - 格式化为 ext4的传统 linux文件
+  - `mkfs.ext4 [-b size] [-L label] 设备名称`
+- 其他文件系统 mkfs
+  - mkfs(make filesystem)是个综合指令
+  - `mkfs[tab][tab]` 查看支持的文件系统的格式化功能
+
+#### 7.3.4 文件系统检验
+
+- `xfs_repair` 处理 XFS文件系统
+  - `xfs_repair [-find] 设备名称`
+- `fsck.ext4` 处理 EXT4文件系统
+  - `fsck.ext4 [-pf] [-b superblock] 设备名称`
+
+#### 7.3.5 文件系统挂载与卸载
+
+- 挂载点是目录，这个目录是进入磁盘分区（文件系统）的入口，挂载前的检查：
+  - 单一文件系统不应该重复被挂载在不同的挂载点(目录)中
+  - 单一目录不应该重复挂载多个文件系统
+  - 要做为挂载点的目录，理论应该是空目录
+- `mount` 挂载指令
+  - `mount -a`  依照配置文件[/etc/fstab]将磁盘挂载
+  - `mount [-l]` 显示Label名称
+  - `mount [-t 文件系统] LABEL='' 挂载点`
+  - `mount [-t 文件系统] UUID='' 挂载点`
+  - `mount [-t 文件系统] 设备文件名 挂载点`
+- 哪些类型的 filesystem需要进行挂载测试，参考：
+  - `/etc/filesystems` 系统指定的测试挂载文件系统类型的优先顺序
+  - `/proc/filesystems` linux系统已经载入的文件系统类型
+- linux支持的文件系统之驱动程序所在目录
+  - `/lib/moduels/$(uname -r)/kernel/fs/`
+- 挂载 xfs/ext4/vfat等文件系统
+  - `blkid /dev/vda5` 找出 /dev/vda5的UUID
+  - `mount UUID="~~" /data/ext4`  挂载
+- 挂载 CD或 DVD光盘
+- 挂载 vfat中文U盘（USB磁盘）
+- 重新挂载根目录与挂载不特定目录
+- `umount` 将设备文件卸载
+  - `umount [-fn] 设备文件名或挂载点`
+
+#### 7.3.6 磁盘/文件系统参数修订
+
+修改一下目前文件系统的一些相关信息
+
+- mknod 
+
+  - `mknod 设备文件名 [bcp] [Major] [Minor]`
+
+- `xfs_admin` 修改 XFS文件系统的UUID与Label name
+
+  - `xfs_admin [-lu] [-L label] [-U uuid] 设备文件名`
+
+- `tune2fs` 修改 ext4的 label name与UUID
+
+  - `tune2fs [-l] [-L label] [-U uuid] 设备文件名`
