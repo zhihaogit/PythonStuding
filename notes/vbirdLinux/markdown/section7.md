@@ -279,3 +279,72 @@ MBR分区表使用 fdisk分区，GPT分区表使用 gdisk分区
 - `tune2fs` 修改 ext4的 label name与UUID
 
   - `tune2fs [-l] [-L label] [-U uuid] 设备文件名`
+
+
+### 7.4 设置开机挂载
+
+#### 7.4.1 开机挂载 /etc/fstab及 /etc/mtab
+
+- 系统挂载的限制
+  - 根目录`/` 是一定要挂载的，还要先于其他 mount point挂载
+  - 其他 mount point必须是已创建目录，要遵守 FHS
+  - 所有的 mount point在同一时间内，只能挂载一次
+  - 所有的 partition在同一时间内，只能挂载一次
+  - 卸载前，需要将工作目录移到 mount point之外
+- mount指令挂载时，将所有的选项写入`/etc/fstab`(filesystem table)
+- `/etc/fstab`文件内容共有 6个字段
+  - 磁盘设备文件名/UUID/LABEL name
+  - 挂载点(mount point)
+  - 磁盘分区的文件系统
+  - 文件系统参数
+  - 是否被 dump备份指令作用
+  - 是否以 fsck检验扇区
+
+####  7.4.2 特殊设备loop挂载
+
+- 挂载光盘/DVD镜像文件
+  - `mount -o loop /tmp/Centod-7.0-DVD.iso /data/centos_dvd`
+- 创建大文件以制作loop设备文件
+- 创建大型文件
+  - `dd if=/dev/zero of=/srv/loopdev bs=1M count=512`
+- 大型文件的格式化
+  - `mkfs.xfs -f /srv/loopdev`
+  - `blkid /srv/loopdev`
+- 挂载
+  - `mount -o loop UUID="7ddasfasdfaf" /mnt`
+  - `df /mnt`
+
+### 7.5 内存交换空间（swap）之创建
+
+swap是 解决内存不足，可以暂时把内存中的程序拿到内存中暂放的内存交换空间
+
+#### 7.5.1 使用实体分区创建swap
+
+- 创建步骤
+  1. 分区
+  2. 格式化
+  3. 使用
+  4. 通过 free与 swapon -s观察内存的用量
+
+#### 7.5.2 使用文件创建swap
+
+1. 使用 dd指令新增一个 128MB的文件在 /tmp
+   - `dd if=/dev/zero of=/tmp/swap bs=1M count=128`
+2. 使用 mkswap将 /tmp/swap的文件格式化为 swap的格式
+   - `mkswap /tmp/swap`
+3. 使用 swapon将 /tmp/swap启动
+   - `swapon /tmp/swap`
+   - `swapon -s`
+4. 使用 swapoff 关掉 swap file,并设置自启动
+
+### 7.6 文件系统的特殊观察与操作
+
+#### 7.6.1 磁盘空间之浪费问题
+
+#### 7.6.2 利用 GNU的 parted进行分区行为（Optional）
+
+- 同时支持 GPT和 MBR的分区指令 -> `parted`
+- 可以在一行命令中完成分区
+- `parted [设备] [指令 [参数]]`
+- 列出目前本机的分区表数据
+  - `parted /dev/vda print`
