@@ -1,2 +1,11 @@
-## There is something about linux in this store
-- some notes
+## Something about skills
+
+### Linux
+- notes
+
+### Python
+- demos
+- notes in demos
+
+### Echarts
+- how to use the chart
