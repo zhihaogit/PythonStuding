@@ -22,3 +22,5 @@ def add(x, y, f):
 
 result2 = add(-10, -9, abs)
 print (result2)
+
+# 编写高阶函数，就是让函数的参数能够接收别的函数
