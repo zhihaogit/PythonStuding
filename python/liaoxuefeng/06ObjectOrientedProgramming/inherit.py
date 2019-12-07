@@ -59,14 +59,3 @@ run_twice(Tortoise())
 Python的 file-like object就是一种鸭子类型
 '''
 
-
-
-
-
-
-
-
-
-
-
-
