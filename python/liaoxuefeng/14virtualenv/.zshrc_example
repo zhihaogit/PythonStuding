@@ -1,0 +1,4 @@
+export WORKON_HOME=$HOME/Envs
+export PROJECT_HOME=$HOME/Devel
+export VIRTUALENVWRAPPER_PYTHON=/usr/local/bin/python3.7
+source /Library/Frameworks/Python.framework/Versions/3.7/bin/virtualenvwrapper.sh
