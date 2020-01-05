@@ -1,7 +1,7 @@
 class Student(object):
     """docstring for Student"""
     def get_score(self):
-        return self._socre
+        return self._score
 
     def set_score(self, value):
         if not isinstance(value, int):

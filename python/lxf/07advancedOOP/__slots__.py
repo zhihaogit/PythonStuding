@@ -19,12 +19,12 @@ print (s.age)
 
 # 给一个实例绑定的方法，对另一个实例不起作用
 # 为了而给所有实例绑定方法，可以给 class绑定方法
-def set_socre(self, score):
+def set_score(self, score):
     self.score = score
 
-Student.set_socre = set_socre
+Student.set_score = set_score
 
-s.set_socre(100)
+s.set_score(100)
 print (s.score)
 
 
@@ -37,10 +37,10 @@ sTest = StudentTest()
 sTest.name = 'Michael'
 sTest.age = 12
 # sTest.score = 123
-sTest.set_socre = MethodType(set_socre, sTest)
-sTest.set_socre = set_socre
-# sTest.set_socre(123)
-print (sTest.set_socre)
+sTest.set_score = MethodType(set_score, sTest)
+sTest.set_score = set_score
+# sTest.set_score(123)
+print (sTest.set_score)
 
 # __slot__的限制只对当前类实例起作用，对继承的子类不起作用
 class GraduateStudent(Student):
