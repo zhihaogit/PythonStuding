@@ -36,6 +36,10 @@ pyenv rehash # 创建垫片路径(为所有已安装的可执行文件创建 shi
 # macos安装
 brew install pyenv-virtualenv
 
+# 在 .zshrc加入
+eval "$(pyenv init -)"
+eval "$(pyenv virtualenv-init -)"
+
 # 创建虚拟环境
 pyenv virtualenv 2.7.17 env-2.7.17
 # 不指定 python版本，将使用默认的版本
