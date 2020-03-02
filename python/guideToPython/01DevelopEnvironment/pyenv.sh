@@ -45,7 +45,8 @@ pyenv virtualenv 2.7.17 env-2.7.17
 # 不指定 python版本，将使用默认的版本
 
 # 列出当前虚拟环境
-pyenv virtualenv
+pyenv virtualenvs
 pyenv activate env-name # 激活虚拟环境
 pyenv deactivate # 退出虚拟环境，回到系统环境
-
+pyenv virtualenvs-delete [-f|--force] env-name # 删除相应的虚拟环境
+pyenv uninstall env-name # 删除相应的虚拟环境
