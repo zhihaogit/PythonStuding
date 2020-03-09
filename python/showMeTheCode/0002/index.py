@@ -1,6 +1,8 @@
 # 将 0001 题生成的 200 个激活码（或者优惠券）保存到 MySQL 关系型数据库中
-import sys
-sys.path.append('/Users/zhengzhihao/StudingNotes/python/showMeTheCode/0001')
+import sys, os
+curPath = os.path.realpath(__file__)
+modulePath = os.path.dirname(curPath)
+sys.path.append(modulePath + '/../0001')
 from index0001 import generateString
 import MySQLdb
 
