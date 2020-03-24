@@ -365,7 +365,7 @@
 
     将原本需要由键盘输入的数据，改由文件内容来取代
 
-    ```
+    ```shell
     cat > catfile
       testing
       cat file test 
@@ -378,7 +378,7 @@
 
     `<<`表示结束的输入字符，eg: 用 cat直接将输入的信息输出到 catfile中，且当键盘输入 eof时，该次输入就结束
 
-    ```
+    ```shell
     cat > catfile << 'eof'
       this is a test
       ok now stop
@@ -409,3 +409,129 @@
   - 假设判断式有三个
 
     `command1 && command2 || command3`
+
+### 10.6 管线命令（pipe）
+
+- `ls -al /etc | less`
+- 管线命令前一个命令需要有 standard output，后一个命令需要接收 standard input
+  - 管线命令仅会处理 standard output，对于 standard error output会忽略
+  - 管线命令必须要能接受来自前一个指令的数据成为 standard input继续处理才行
+- 硬要 standard error output被管线命令接收，可以使用数据流重导向，`2>&1`
+
+#### 10.6.1 撷取命令：cut, grep
+
+- `cut` 将一段信息切出来，操作的单位是行
+
+  ```shell
+  cut -d '分隔字符' -f fields # 用于特定分隔字符
+  cut -c '字符区间'						# 用于排列整齐的信息
+  -d # 后面接分隔字符，与 -f一起使用
+  -f # 依据 -d的分隔字符讲一段信息分成几段，用 -f取出第几段
+  -c # 以字符（characters）的单位取出固定字符区间
+  
+  echo ${PATH} | cut -d ':' -f 3,5
+  export | cut -c 12- # export出的信息，取出 12行到末尾
+  last | cut -d ' ' -f 1 # 显示登陆者的信息
+  ```
+
+- `grep` 分析一段信息，找出需要的
+
+  ``````shell
+  grep [-acinv] [--color=auto] '搜寻字段' filename
+  -a # 将 binary文件以 text文件的方式搜寻数据
+  -c # 计算找到 '搜寻字串'的次数
+  -i # 忽略大小写的区别
+  -n # 顺便输出行号
+  -v # 反向选择，亦即显示出没有 '搜寻字串'内容的那一行
+  --color=auto # 高亮关键字
+  
+  last | grep root
+  last | grep -v root # 找出不是 root的用户
+  last | grep root | cut -d ' ' -f1
+  grep --color=auto 'MANPATH' /etc/man_db.conf
+  ``````
+
+#### 10.6.2 排序命令：sort, wc, uniq
+
+- `sort` 排序
+
+  ``````shell
+  sort [-fbMnrtuk] [file or stdin]
+  ``````
+
+- `uniq` 去重
+
+  ``````shell
+  uniq [-ic]
+  -i # 忽略大小写
+  -c # 进行计数
+  ``````
+
+- `wc` 输出信息的整体数据
+
+  ``````shell
+  wc [-lwm]
+  -l # 仅列出行
+  -w # 仅列出多少字（英文单词）
+  -m # 多少字符
+  ``````
+
+#### 10.6.3 双向重导向：tee
+
+- `tee`指令会同时将数据流分送到文件和屏幕，输出到屏幕的是 stdout，就可以让下个指令继续处理
+
+- `````shell
+  tee [-a] file
+  -a # 以累加的（append）的方式，将数据加入 file当中
+  
+  last | tee last.list | cut -d ' ' -f1 # 将 last的输出存一份到 last.list中
+  ls -l /home | tee ~/homefile | more # 将 ls的数据存一份到 ~/homefile，同时输出到屏幕上
+  ls -l / | tee -a ~/homefile | more # 不覆盖 homefile的内容，累加到里面
+  `````
+
+#### 10.6.4 字符转换命令：tr, col, join, paste, expand
+
+- `tr` 用来删除一段信息中的文字，或者是进行文字信息的替换
+- `col` 将 [tab]按键取代称为空白键
+- `join` 处理两个文件，有相同数据的那一行，将它们加在一起，一般先将文件 sort处理，否则有些比对的项目会被略过
+- `paste` 不对比两个文件的数据相关性，直接将两行贴在一起，中间用 [tab]键隔开
+- `expand` 将 [tab]键转成空白键
+
+#### 10.6.5 分区命令：split
+
+``````shell
+split [-bl] file PREFIX
+-b # 后面可接欲分区成的文件大小，可加单位，如：b, k, m
+-l # 以行数来进行分区
+PREFIX # 代表前置字符的意思，可作为分区文件的前导文字
+
+cd /tmp; split -b 300k /etc/services services # 拆文件
+cat services* >> servicesback # 合并文件
+ls -al / | split -l 10 - lsroot
+``````
+
+#### 10.6.6 参数代换：xargs
+
+- `xargs`可以读入 stdin的数据，并且以空白字符或断行字符作为分辨，将 stdin的数据分隔成 arguments
+
+- 因为是以空白字符作为分隔，有些文件名或语句内含有空白字符，`xargs`可能会误判
+
+- ``````shell
+  xargs [-øepn] command
+  -ø # 如果输入的 stdin含有特殊字符，该参数可以将它还原成一般字符
+  -e # 这个是 EOF（end of file），后面接一个字符，识别到字符后，将停止
+  -p # 执行每个指令的 argument时，都会询问使用者的意思
+  -n # 后面接次数，每次 command指令执行时，要使用几个参数
+  ``````
+
+- 很多指令不支持管线命令，可以通过 xargs来提供该指令引用 standard input
+
+#### 10.6.7 关于减号-的用途
+
+- 在管线命令中，会用到前一个指令的 stdout作为这次的 stdin，某些指令需要用到文件名称（如 tar）来进行处理，该 stdin与 stout可以利用减号-替代
+
+- ``````shell
+  mkdir /tmp/homeback
+  tar -cvf - /home | tar -xvf - -C /tmp/homeback
+  ``````
+
