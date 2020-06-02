@@ -1,4 +1,4 @@
-package Day0001;
+package AVariables;
 
 public class Demo04DataType {
     /**

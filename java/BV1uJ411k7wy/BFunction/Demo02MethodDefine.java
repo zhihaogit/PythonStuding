@@ -1,4 +1,4 @@
-package Day0002;
+package BFunction;
 
 /**
  * 方法的三种调用格式

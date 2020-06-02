@@ -1,4 +1,4 @@
-package Day0001;
+package AVariables;
 
 /**
  * 强制类型转换

@@ -1,4 +1,4 @@
-package Day0002;
+package BFunction;
 
 /**
  * 方法的重载（overload）：多个方法的名称一样，参数列表不一样

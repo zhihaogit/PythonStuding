@@ -1,4 +1,4 @@
-package Day0001;
+package AVariables;
 
 public class Demo02Variable {
     public static void main(String[] args) {

@@ -1,4 +1,4 @@
-package Day0002;
+package BFunction;
 /**
  * 方法不能定义在方法中，即方法不能嵌套
  * 对于方法最后一行 return可以省略不写

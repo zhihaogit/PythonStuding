@@ -1,4 +1,4 @@
-package Day0003;
+package CArray;
 /**
  * 数组
  * 概念：是一种容器，可以同时存放多个数据值

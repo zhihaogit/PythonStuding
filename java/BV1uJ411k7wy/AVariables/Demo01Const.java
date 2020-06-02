@@ -1,4 +1,4 @@
-package Day0001;
+package AVariables;
 
 public class Demo01Const {
     public static void main(String[] args) {

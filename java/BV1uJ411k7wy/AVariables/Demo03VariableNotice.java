@@ -1,4 +1,4 @@
-package Day0001;
+package AVariables;
 
 public class Demo03VariableNotice {
     public static void main(String[] args) {

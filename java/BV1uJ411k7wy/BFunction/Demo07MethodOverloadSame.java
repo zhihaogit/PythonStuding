@@ -1,4 +1,4 @@
-package Day0002;
+package BFunction;
 
 public class Demo07MethodOverloadSame {
     public static void main(String[] args) {
