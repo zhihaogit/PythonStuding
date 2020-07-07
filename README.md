@@ -1,4 +1,4 @@
-## Something about skills
+## What 
 
 ### Linux
 - notes
@@ -7,8 +7,5 @@
 - demos
 - notes in demos
 
-### Echarts
-- how to use the chart
-
 ### SQL
-- what
+- notes
