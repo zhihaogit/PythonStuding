@@ -33,6 +33,19 @@ docker run -d --rm --name container_name -p 10007:80 -v `pwd`/nginx.conf:/etc/ng
 # --rm 容器停止后，自动删除容器
 ```
 
+## docker build相关指令
+### 使用当前目录的 Dockerfile创建镜像
+```shell
+docker build -t test/ubuntu:v1 ./
+# -t,--tag 镜像的名字及标签，通常 name:tag或者 name格式。可以在一次构建中为一个镜像设置多个标签
+# ./ 当前目录
+```
+
+### 指定 Dockerfile创建镜像
+```shell
+docker build -f /path/to/a/Dockerfile ./
+```
+
 ## docker容器镜像管理指令
 ### 目前运行中的容器的一些详细信息
 ```shell
@@ -80,3 +93,11 @@ docker rmi image_name|image_id
 docker rm -v $(docker ps -aq -f status=exited)
 # -v参数在这里意味着当所有由 Docker管理的数据卷已经没有和任何容器有关联时，都会一律删除
 ```
+
+### 重新生成一个新 tag的镜像
+```shell
+docker tag [OPTIONS] IMAGE[:TAG] [REGISTRYHOST/][USERNAME/]NAME[:TAG]
+docker tag ubuntu:15.10 test/ubuntu:v3
+# 标记本地镜像，并将其归入某一仓库
+```
+
