@@ -101,3 +101,17 @@ docker tag ubuntu:15.10 test/ubuntu:v3
 # 标记本地镜像，并将其归入某一仓库
 ```
 
+### 容器与主机之间的数据拷贝
+```shell
+docker cp [options] container_id:source_path dest_path
+# 将容器的文件拷贝到主机的指定地址
+docker cp [options] source_path container_id:dest_path
+# 将主机的文件拷贝到容器的指定地址
+
+docker cp 96f7f14e99ab:/data/dataconf .
+# 将主机的dataconf文件拷贝到容器的data文件夹下，并重命名为dataconf
+docker cp ./dataconf 96f7f14e99ab:/data/dataconf
+# 将主机的dataconf文件拷贝到容器的data文件夹下
+docker cp ./dataconf 96f7f14e99ab:/data/
+```
+
